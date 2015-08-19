@@ -9,15 +9,15 @@ Presently it lacks the following:
 
    FOR loop
    
-    Array
-    
+   Array
+ 
    READ and DATA
    
    user function definition
 
 We hope that you will use this version to learn how interpreter(if you ready don't know) are crafted, and also give us feedback in the area of code design. 
 
- To play with in go to main function and carefully edit this variable ..  
+ To play with  go to main function and carefully edit this variable ..  
  
 char* ytest  = "foo = (314159 * 10) - 3000000 \n print foo \n  \n tin = 3 \n if tin > tin then fin    \n  print foo  \n input guess \n print foo / guess  \n fin: \n  print \"Well Done\" \n print tin  ";
 
@@ -47,8 +47,7 @@ On expression operator we have :
 
  * op for only number
 
-< for both number and string
+< and >  for both number and string
 
-> for both number and string
 
-We missed out freeing memory in some places .. see if you can't figure tha
+We missed out freeing memory in some places .. see if you can figure that out.
