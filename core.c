@@ -1,3 +1,7 @@
+/*
+ Copy Right:: Freely we received , freely do we give. By Emeka 
+
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -16,6 +20,7 @@
 #define S_assign 10
 #define S_array 11
 #define S_for 12
+
 
 int statsize = 1;
 int trastatpos = 0;
