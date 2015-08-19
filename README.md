@@ -27,13 +27,16 @@ char* ytest  = "foo = (314159 * 10) - 3000000 \n print foo \n  \n tin = 3 \n if 
 Tell us your findings. We intend to add Array, Read, and Data store in the next version(they are virtually done). We are also working to include user function definition and FOR loop.
 
 Things it can do:
- Assignment Statement  :: foo = (314159 * 10) - 3000000
+
+Assignment Statement  :: foo = (314159 * 10) - 3000000
  
 Print Statement :: -> print expression  :: print foo
 
 Input Statement::-> input variable  :: input guess
 
-If Statement and Label ::-> if  expression then label ... you declare label like goo: , so if you have  --if 8 < 10 then goo, you program will jump to goo
+If Statement and Label 
+
+::-> if  expression then label ... you declare label like goo: , so if you have  --if 8 < 10 then goo, you program will jump to goo
 
 Goto Statement:: First label .. Koo: , for later just call goto Koo. Note that you can position label before or after goto.
 
