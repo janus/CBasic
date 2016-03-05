@@ -52,15 +52,10 @@ int sizeelem = 0;
 int savesize[5];
 int setinjump = 0;
 int chrule = 0;
-
 int fc = 0;
-
 int afirst = 0;
-
 int ascendingnum = 0;
-
 int lfirst = 0;
-
 int suspend = 0;
 
 struct optoken
@@ -69,20 +64,17 @@ struct optoken
     int nop;
 };
 
-
 struct opcodeWord
 {
 	char word[9];
 	int opcode;
 };
 
-
 typedef struct  Clist
 {
     char* text;
     int type;
     struct Clist* next;
-
 }Clist;
 
 typedef struct CStringValue
@@ -118,9 +110,7 @@ struct COperatorExpression
     struct CExpression* left;
     struct CExpression* right;
     int coperator;
-
 };
-
 
 struct CVariableExpression
 {
@@ -143,7 +133,6 @@ typedef struct CPrintStatement
 typedef struct CInputStatement
 {
     struct CExpression* name;
-
 }CInputStatement;
 
 typedef struct CAssignStatement
@@ -155,14 +144,12 @@ typedef struct CAssignStatement
 typedef struct CGotoStatement
 {
     struct CExpression* label;
-    
 }CGotoStatement;
 
 typedef struct CIfThenStatement
 {
     struct CExpression* condition;
     struct CExpression* lnum;
-
 }CIfThenStatement;
 
 typedef struct CAElements
@@ -180,15 +167,11 @@ typedef struct CArrayStatement
     int upcount;
 }CArrayStatement;
 
-
-
 typedef struct CStatement
 {
     int kind;
-
-        void* statement;
-        struct CStatement* next;
-
+    void* statement;
+    struct CStatement* next;
 }CStatement;
 
 typedef struct CForStatement
@@ -197,11 +180,8 @@ typedef struct CForStatement
     struct CExpression* endexp;
     struct CExpression* indexp;
     struct CExpression* step;
-    CStatement* lforstat;
-    
+    CStatement* lforstat;    
 }CForStatement;
-
-
 
 typedef struct NStatement 
 {
@@ -229,8 +209,6 @@ LStatement* lstatement ;
 CArrayStatement* arrhead ;
 CArrayStatement* arraypos = NULL ;
 CAElements* trackelem = NULL;
-
-
 
 
 struct CExpression* expression();
@@ -291,20 +269,18 @@ int getpriWord(char* sword)
 void cerror (void* obj, char* message)
 {
     if(!obj)
-		{
-			printf("\n %s\n", message);
-			exit(1);
-		}
+	{
+		printf("\n %s\n", message);
+		exit(1);
+	}
 }
 
 void insertlabel(char* label)
 {
     if(currentpos < dim)
-		{
-			strcpy(tknlb[currentpos++], label);
-			
-		}
-
+	{
+		strcpy(tknlb[currentpos++], label);
+	}
     return;
 }
 
@@ -312,13 +288,13 @@ int contains (char* label)
 {
     int i = 0;
     while(i < currentpos)
+	{
+		if(strcmp(label, tknlb[i] ) == 0)
 		{
-			if(strcmp(label, tknlb[i] ) == 0)
-			{
-				return 1;
-			}
-			i++;
+			return 1;
 		}
+		i++;
+	}
     return 0;
 }
 
@@ -327,12 +303,7 @@ Clist* tail = 0;
 Clist* stepback = 0;
 Clist* currenttoken = 0;
 Clist* double_step_back = 0;
-/** head = tail = stepback = currenttoken = 0;
-*static Clist* tail = 0;
-*static Clist* stepback = 0;
-*static Clist* doubleback = 0;
-*static Clist* currenttoken = 0;
-*/
+
 
 struct CExpression* makenumval(double val)
 {
@@ -343,9 +314,9 @@ struct CExpression* makenumval(double val)
     result = (CValue* ) malloc(sizeof(CValue));
     rstexpress = (struct CExpression* ) malloc(sizeof(struct CExpression*));
     if(!dval || !rstexpress || !result)
-		{
-			cerror(0,"ERROR---Not enough space" );
-		}
+	{
+		cerror(0,"ERROR---Not enough space" );
+	}
     dval->value = val;
     result->kind = NumberValue;
     result->value = dval;
@@ -365,9 +336,9 @@ struct CExpression* makestrval(char* str)
     result = (CValue*)malloc(sizeof(CValue));
     rstexpress = (struct CExpression*)malloc(sizeof(struct CExpression));
     if(!sval || !result || !rstexpress)
-		{
-			cerror(0,"ERROR---Not enough space" );
-		}
+	{
+		cerror(0,"ERROR---Not enough space" );
+	}
     ASSIGN_STRING(sval,value,str, lstr);
     sval->value[lstr] = '\0';
     result->kind = StringValue;
@@ -375,13 +346,11 @@ struct CExpression* makestrval(char* str)
     rstexpress->kind = V_value;
     rstexpress->valueexpression = result;
     return rstexpress;
-
 }
 
 
 void nexttk()
 {
-	
 	double_step_back = stepback;
 	stepback = currenttoken;
 	currenttoken = currenttoken->next;
@@ -394,11 +363,10 @@ void nexttk()
         printf("ERROR---Expected type %i", typ);
         exit(1);
     }
-    if(!currenttoken){
-		
+    if(!currenttoken)
+    {	
         printf("ERROR--You have reached the end");
-        exit(1);		
-		
+        exit(1);			
 	}
     nexttk();
     return currenttoken;
@@ -445,9 +413,9 @@ struct CExpression* makeoperatorexpress(struct CExpression* left, int op, struct
     cop = (struct COperatorExpression*)malloc(sizeof(struct COperatorExpression));
     result = (struct CExpression* ) malloc(sizeof(struct CExpression));  
     if(!cop || !result)
-		{
-			cerror(0,"ERROR---Not enough space" );
-		}
+	{
+		cerror(0,"ERROR---Not enough space" );
+	}
     cop->left = left;
     cop->right = right;
     cop->coperator = op;
@@ -465,18 +433,15 @@ struct CExpression* makevarexpression(char* text)
     temp = (struct CVariableExpression* ) malloc(sizeof(struct CVariableExpression));
     result = (struct CExpression* ) malloc(sizeof(struct CExpression));
     if(!temp || !result )
-		{
-			cerror(0, "ERROR---Not enough space");
-		}
+	{
+		cerror(0, "ERROR---Not enough space");
+	}
     ASSIGN_STRING(temp,name,text,lstr);
     temp->name [lstr] = '\0';
     result->kind = V_expression;
     result->variableexpression = temp;
     return result;
-
 }
-
-
 
 
 CStatement* lookupstat(int num)
@@ -496,7 +461,6 @@ CStatement* lookupstat(int num)
 void addstat(void* statf, int kind, int pnum)
 {
 	if(pnum < 0 )
-	
 	{
 		printf("ERROR -- statement identification line number should be postive integer");
 		exit(1);
@@ -515,9 +479,7 @@ void addstat(void* statf, int kind, int pnum)
 		printf("ERROR -- previous (%i), present val (%i) statement ident line number in increasing order", ascendingnum, pnum);
 		exit(1);
 	}
-		
 	ascendingnum = pnum;
-	
     CStatement* ttstat = (CStatement *)malloc(sizeof(CStatement));
     cerror(ttstat, "ERROR--not enough memory");
     ttstat->statement = (CStatement *)statf;
@@ -534,7 +496,6 @@ void addstat(void* statf, int kind, int pnum)
 		lstatement->nstats[lstatement->nelem -  1].stats = ttstat;
 		lstatement->nstats[lstatement->nelem - 1].statnum = pnum;
         afirst = 1;
-
     }
     else
     {
@@ -543,7 +504,6 @@ void addstat(void* statf, int kind, int pnum)
 			LStatement* lnew =  (LStatement *)malloc(sizeof(LStatement));
     		cerror(lnew, "ERROR--not enough memory");
 			lnew->capacity = lstatement->capacity * 2;
-			
 			lnew->nstats = (NStatement *)malloc(sizeof(NStatement)* lnew->capacity) ;
 			int i;
 			cerror(lnew->nstats, "ERROR--not enough memory");
@@ -557,13 +517,10 @@ void addstat(void* statf, int kind, int pnum)
 		    free(lstatement);
 		    lstatement = lnew;
 		}
-			lstatement->nelem++;
-			lstatement->nstats[lstatement->nelem -  1].stats = ttstat;
-			lstatement->nstats[lstatement->nelem - 1].statnum = pnum;
-			
+		lstatement->nelem++;
+		lstatement->nstats[lstatement->nelem -  1].stats = ttstat;
+		lstatement->nstats[lstatement->nelem - 1].statnum = pnum;	
 	}
-			
-			
 }
 
 
@@ -573,10 +530,7 @@ CIfThenStatement* makeifthenstat(struct CExpression* exp, struct CExpression* di
     cerror(ifstat,"ERROR-not enough memory to make IF statement" );
     ifstat->condition = exp;
     ifstat->lnum = dirval;
-
     return ifstat;
-
-
 }
 
 CGotoStatement* makegotostat(struct CExpression* namelabel)
@@ -585,7 +539,6 @@ CGotoStatement* makegotostat(struct CExpression* namelabel)
     cerror(gotostat, "ERROR-not enough memory to make GOTO statement");
     gotostat->label = namelabel;
     return gotostat;
-
 }
 
 CAssignStatement* makeassignstat(struct CExpression* name, struct CExpression* value)
@@ -600,7 +553,6 @@ CAssignStatement* makeassignstat(struct CExpression* name, struct CExpression* v
 
 CForStatement* makeforstat(CStatement* stats,  struct CExpression* initexpr, struct CExpression* endexpr, struct CExpression* indexpr, struct CExpression* fstep)
 {
-
     CForStatement* forstat = (CForStatement*)malloc(sizeof(CForStatement));
     cerror(forstat, "ERROR-not enough memory assignment");
     forstat->step = fstep;
@@ -608,7 +560,6 @@ CForStatement* makeforstat(CStatement* stats,  struct CExpression* initexpr, str
     forstat->endexp = endexpr;
     forstat->initexp = initexpr;
     forstat->lforstat = stats;
-
     return forstat;
 }
 
@@ -635,35 +586,33 @@ CValue* lookup(struct CExpression* key, Cvariables** varenv)
     while(varhead)
     {
         if(strcmp((char*)varhead->key->variableexpression->name,(char*)key->variableexpression->name) == 0)
-           {
-               return varhead->vval;
-           }
+        {
+            return varhead->vval;
+        }
         varhead = varhead->next;
     }
     return 0;
-
 }
 
 int tfirst = 0;
 
 void putvar(struct CExpression* key , CValue* val)
 {
-        Cvariables* lenv = (Cvariables *)malloc(sizeof(Cvariables));
-        cerror(lenv, "ERROR-not enough memory assignment");
-        lenv->vval = val;
-        lenv->next = 0;
-        lenv->key = key;
-
-        if(!tfirst)
-        {
-           henv = lenv;
-           tenv = lenv;
-        }
-        else
-        {
-            tenv->next = lenv;
-            tenv = lenv;
-        }
+    Cvariables* lenv = (Cvariables *)malloc(sizeof(Cvariables));
+    cerror(lenv, "ERROR-not enough memory assignment");
+    lenv->vval = val;
+    lenv->next = 0;
+    lenv->key = key;
+    if(!tfirst)
+    {
+    henv = lenv;
+    tenv = lenv;
+    }
+    else
+    {
+        tenv->next = lenv;
+        tenv = lenv;
+    }
 
 }
 
@@ -973,7 +922,6 @@ void exec ()
 			{
 				CNumberValue* jumpval = eval(ifstat->lnum, &henv)->value;
 				/*TO DO  jump function argumet jumpval*/
-
 			}
 			return;
 		}
@@ -1038,13 +986,11 @@ CStatement* fstatements()
 		{
 			    nexttk();
 				continue;
-			
 		}
 		if(currenttoken->type != TT_NUMBER)
 		{
 			printf("Poorly structured syntax, each statement line must start with an integer");
 			exit(1);
-			
 		}
 		nump = atoi(currenttoken->text);
 		nexttk();
@@ -1093,8 +1039,7 @@ CStatement* fstatements()
 					arraypos->elem->next = tra;
 					tra = arraypos->elem->next;
 					icount = arrhead->nelements + 1;
-					printf("\nDATAzeroposition\n");
-					
+					printf("\nDATAzeroposition\n");		
 				}
 				nexttk();
 				while(peek(TT_CONCAT_OPERATOR))
@@ -1181,7 +1126,6 @@ CStatement* fstatements()
 			}
 			case LET:
 			{
-				
 				nexttk();
 				printf("\nassigment\n");
 				if(currenttoken->type == TT_WORD)
@@ -1236,7 +1180,6 @@ CStatement* fstatements()
 					step = expression();
 				}
 				expected(TT_LINE);
-				
 				CStatement* dfor = fstatements();
 				nexttk();
 				struct CExpression* index = expression();
@@ -1245,7 +1188,6 @@ CStatement* fstatements()
 				expected(TT_LINE);
 				break;
 			}
-	
 			case PRINT:
 			{
 				printf("\nPRINT\n");
@@ -1313,10 +1255,7 @@ CStatement* fstatements()
 					cerror(0, "ERROR--unknown token");
 				}
 		}
-		
-		printf("\nNEXTTK\n");
-		
-		
+		printf("\nNEXTTK\n")	
     }
     return hstat;
 }
