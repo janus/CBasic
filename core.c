@@ -79,11 +79,9 @@ int fc = 0;
 
 char* reservedword[] = { "DIM", "FOR", "PRINT", "DEF", "IF","READ","INPUT","NEXT", "RETURN","STOP", "END", "GOTO", "GOSUB", "THEN", "LET", "DATA", "TO", "STEP", "REM",NULL};
 
-char getoptype (char cop)
-{
+char getoptype (char cop){
     int i;
-    for(i = 0; i < aroptokenlen; i++)
-    {
+    for(i = 0; i < aroptokenlen; i++){
 		if(cop == aroptoken[i].cop)
 			return aroptoken[i].nop;
     }
@@ -91,31 +89,24 @@ char getoptype (char cop)
 
 }
 
-void cerror (void* obj, char* message, const char* name,  int line)
-{
-    if(!obj)
-    {
+void cerror (void* obj, char* message, const char* name,  int line){
+    if(!obj){
         fprintf(stderr, "%s\ninside function %s \nand line %d\n", message, name, line);
         exit(0);
     }
 }
 
-void insertlabel(char* label)
-{
-    if(currentpos < dim)
-    {
+void insertlabel(char* label){
+    if(currentpos < dim){
         strcpy(tknlb[currentpos++], (const char*)label);
     }
     return;
 }
 
-int contains(char* label)
-{
+int contains(char* label){
     int i = 0;
-    while(i < currentpos)
-    {
-        if(strcmp((const char*)label, (const char*)tknlb[i] ) == 0)
-        {
+    while(i < currentpos){
+        if(strcmp((const char*)label, (const char*)tknlb[i] ) == 0){
             return 1;
         }
         i++;
@@ -144,8 +135,7 @@ void  addFunc(FuncAbstraction* fun){
 }
 
 		
-struct CExpression* makefunCall(char* name, LExpression* Lexp, int nsize)
-{
+struct CExpression* makefunCall(char* name, LExpression* Lexp, int nsize){
 	FuncCall* fncall;
 	struct CExpression* expcall;
 	fncall = malloc(sizeof(FuncCall));
@@ -171,16 +161,14 @@ struct CExpression* makefunCall(char* name, LExpression* Lexp, int nsize)
 	
 }
 	
-struct CExpression* makenumval(double val)
-{
+struct CExpression* makenumval(double val){
     CNumberValue* dval;
     CValue* result;
     struct CExpression* rstexpress;
     dval=  malloc(sizeof(CNumberValue));
     result = malloc(sizeof(CValue));
     rstexpress = (struct CExpression* ) malloc(sizeof(struct CExpression*));
-    if(!dval || !dval || !result)
-    {
+    if(!dval || !dval || !result){
         cerror(0,"ERROR---Not enough space", __func__, __LINE__ );
 
     }
@@ -193,16 +181,14 @@ struct CExpression* makenumval(double val)
 }
 
 
-struct CExpression* makestrval(char* str)
-{
+struct CExpression* makestrval(char* str){
     CStringValue* sval;
     CValue* result;
     struct CExpression* rstexpress;
     sval = malloc(sizeof(CStringValue));
     result = malloc(sizeof(CValue));
     rstexpress = (struct CExpression*)malloc(sizeof(struct CExpression));
-    if(!sval || !sval || !rstexpress)
-    {
+    if(!sval || !sval || !rstexpress){
         cerror(0,"ERROR---Not enough space", __func__, __LINE__ );
     }
     sval->value = str;
@@ -214,14 +200,12 @@ struct CExpression* makestrval(char* str)
 }
 
 
-struct CExpression* makeoperatorexpress(struct CExpression* left, int op, struct CExpression* right)
-{
+struct CExpression* makeoperatorexpress(struct CExpression* left, int op, struct CExpression* right){
     struct COperatorExpression* cop;
     struct CExpression* result;
     cop = malloc(sizeof(struct COperatorExpression));
     result = malloc(sizeof(struct CExpression));
-    if(!cop || !result)
-    {
+    if(!cop || !result){
         cerror(0,"ERROR---Not enough space", __func__, __LINE__ );
 
     }
@@ -233,14 +217,12 @@ struct CExpression* makeoperatorexpress(struct CExpression* left, int op, struct
     return result;
 }
 
-struct CExpression* makevarexpression(char* text)
-{
+struct CExpression* makevarexpression(char* text){
     struct CVariableExpression* temp;
     struct CExpression* result;
     temp = malloc(sizeof(struct CVariableExpression));
     result = malloc(sizeof(struct CExpression));
-    if(!temp || !result )
-    {
+    if(!temp || !result ){
         cerror(0, "ERROR---Not enough space" , __func__, __LINE__);
     }
     temp->name = text;
@@ -250,8 +232,7 @@ struct CExpression* makevarexpression(char* text)
 }
 
 
-void addstat(void* statf, int stype,int ssize,char* labelnumber,int sty)
-{
+void addstat(void* statf, int stype,int ssize,char* labelnumber,int sty){
 	int lnum = (int)strtol(labelnumber,(char**) NULL, 10);;
 	Clabels* clb  = malloc(sizeof(Clabels));
 	cerror(clb, "ERROR--not enough memory to create Clabels" , __func__, __LINE__);
@@ -275,13 +256,11 @@ void addstat(void* statf, int stype,int ssize,char* labelnumber,int sty)
     if(llst->top - 1 < STAT_MAX){
 		llst->clabs[llst->top++] = clb;
 	}
-    if(!tstat)
-    {
+    if(!tstat){
         hstat = ttstat;
         tstat = ttstat;
     }
-     else
-    {
+    else{
         tstat->next = ttstat;
         tstat = ttstat; 
     }
@@ -289,12 +268,10 @@ void addstat(void* statf, int stype,int ssize,char* labelnumber,int sty)
 
 }
 
-void  jumpto(int jmp , int test)
-{
+void  jumpto(int jmp , int test){
 	if (jmp < 0){
 		for(int i = 0; i < llst->top; i++){
 			if(llst->clabs[i]->cindex == test){
-				
 				pc = llst->clabs[i]->st;
 				return;
 			}
@@ -310,11 +287,9 @@ void  jumpto(int jmp , int test)
 		}
 	}
 	cerror(0, "The label to jump to is not in your code" , __func__, __LINE__);
-
 }
 
-int match(int tkntype)
-{
+int match(int tkntype){
     if(!currenttoken)
         return 0;
     if(currenttoken->type != tkntype)
@@ -326,8 +301,7 @@ int match(int tkntype)
     return 1;
 }
 
-int matchtypes(int tpa, int tpb)
-{
+int matchtypes(int tpa, int tpb){
     Clist* temp,*ctemp;
     if(!currenttoken)
         return 0;
@@ -344,8 +318,7 @@ int matchtypes(int tpa, int tpb)
 }
 
 
-int matchstring(char* str)
-{
+int matchstring(char* str){
     if(!currenttoken)
         return 0;
     if(currenttoken->type != TT_WORD)
@@ -358,8 +331,7 @@ int matchstring(char* str)
     return 1;
 }
 
-CIfThenStatement* makeifthenstat(struct CExpression* exp, char* label)
-{
+CIfThenStatement* makeifthenstat(struct CExpression* exp, char* label){
     CIfThenStatement* ifstat = malloc(sizeof(CIfThenStatement));
     cerror(ifstat,"ERROR-not enough memory to create if statement object", __func__, __LINE__ );
     ifstat->condition = exp;
@@ -367,8 +339,7 @@ CIfThenStatement* makeifthenstat(struct CExpression* exp, char* label)
     return ifstat;
 }
 
-CGotoStatement* makegotostat(char* label)
-{
+CGotoStatement* makegotostat(char* label){
     CGotoStatement* gotostat = malloc(sizeof(CGotoStatement));
     cerror(gotostat, "ERROR-not enough memory to create goto object" , __func__, __LINE__);
     gotostat->label = label;
@@ -376,8 +347,7 @@ CGotoStatement* makegotostat(char* label)
     return gotostat;
 }
 
-CGosubStatement* makegosubstat(int jmp, int lbnum)
-{
+CGosubStatement* makegosubstat(int jmp, int lbnum){
     CGosubStatement* gosubstat = malloc(sizeof(CGosubStatement));
     cerror(gosubstat, "ERROR-not enough memory to create gosub object" , __func__, __LINE__);
     gosubstat->label = lbnum;
@@ -385,8 +355,7 @@ CGosubStatement* makegosubstat(int jmp, int lbnum)
     return gosubstat;
 }
 
-CAssignStatement* makeassignstat(char* name, struct CExpression* value)
-{
+CAssignStatement* makeassignstat(char* name, struct CExpression* value){
     CAssignStatement* assignstat = malloc(sizeof(CAssignStatement));
     cerror(assignstat, "ERROR-not enough memory assignment" , __func__, __LINE__);
     assignstat->name = name;
@@ -394,8 +363,7 @@ CAssignStatement* makeassignstat(char* name, struct CExpression* value)
     return assignstat;
 }
 
-CArrayStatement* makearraystat(char* name, struct CExpression* value, struct CExpression* valopt)
-{
+CArrayStatement* makearraystat(char* name, struct CExpression* value, struct CExpression* valopt){
     CArrayStatement* arraystat = malloc(sizeof(CArrayStatement));
     cerror(arraystat, "ERROR-not enough memory  array object" , __func__, __LINE__);
     arraystat->varname = name;
@@ -404,16 +372,14 @@ CArrayStatement* makearraystat(char* name, struct CExpression* value, struct CEx
     return arraystat;
 }
 
-CInputStatement* inputstat(char* name)
-{
+CInputStatement* inputstat(char* name){
     CInputStatement* instat = malloc(sizeof(CInputStatement));
     cerror(instat, "ERROR-not enough memory Input Statement object" , __func__, __LINE__);
     instat->name = name;
     return instat;
 }
 
-CPrintStatement* printstat(struct LExpression* exp)
-{
+CPrintStatement* printstat(struct LExpression* exp){
     CPrintStatement* pstat = malloc(sizeof(CPrintStatement));
     cerror(pstat, "ERROR-not enough memory Print Statement", __func__, __LINE__);
     pstat->expression = exp;
@@ -422,13 +388,10 @@ CPrintStatement* printstat(struct LExpression* exp)
 
 
 //Find in a table(not done yet
-CValue* lookup(char* key, env** varenv)
-{
+CValue* lookup(char* key, env** varenv){
     env* varhead =  *varenv;
-    while(varhead)
-    {
-        if(strcmp(varhead->key,key) == 0)
-		{
+    while(varhead){
+        if(strcmp(varhead->key,key) == 0){
 		   return varhead->vval;
 		}
         varhead = varhead->next;
@@ -437,20 +400,17 @@ CValue* lookup(char* key, env** varenv)
 
 }
 
-void putvar(char* key , CValue* val)
-{
+void putvar(char* key , CValue* val){
 	env* lenv = malloc(sizeof(env));
 	cerror(lenv, "ERROR-not enough memory assignment" , __func__, __LINE__);
 	lenv->vval = val;
 	lenv->next = NULL;
 	lenv->key = key;
-	if(!tenv)
-	{
+	if(!tenv){
 	   henv = lenv;
 	   tenv = lenv;
 	}
-	else
-	{
+	else{
 		lenv->next = henv;
 		henv = lenv;
 	}
@@ -470,13 +430,11 @@ int isnumber(char* str){
 	return 1;
 }
 
-void clean(env** envl)
-{
+void clean(env** envl){
 	env* lenv = *envl;
 	env* lenvl;
 	CValue* val;
 	while(1){
-		
 		if(strlen(lenv->key) < 7 && !isnumber(lenv->key)){
 			lenvl =  lenv;
 			if(lenvl->vval){
@@ -544,11 +502,9 @@ void clean(env** envl)
 
 }
 //Parser help functions
-Clist* consume (int typ)
-{
+Clist* consume (int typ){
     Clist* temp;
-    if(currenttoken->type != typ)
-    {
+    if(currenttoken->type != typ){
         printf("ERROR---Expected type %i and text : %s", typ, currenttoken->text);
         exit(0);
     }
@@ -559,10 +515,8 @@ Clist* consume (int typ)
     return temp;
 }
 
-Clist* consumestr (char* str)
-{
-    if(!matchstring(str))
-    {
+Clist* consumestr (char* str){
+    if(!matchstring(str)){
         printf("ERROR--expected %s", str);
         exit(0);
     }
@@ -570,499 +524,427 @@ Clist* consumestr (char* str)
 }
 
 //Expression evaluation
-CValue* eval(struct CExpression* express, struct env** varenv)
-{
-    switch(express->extype)
-    {
+CValue* eval(struct CExpression* express, struct env** varenv){
+	struct CVariableExpression* varexpress;
+	CValue* cval, *leftval, *rightval, *rop;
+	FuncCall* fnCall;
+	LExpression* exlst;
+	env* lvals;
+	env* local = *varenv;
+	int idx;
+	parList* plst;
+	CValue* rtval;
+	FuncAbstraction* fndecl;
+	CNumberValue* dlvalue,*drvalue, *detemp;
+	CStringValue* slvalue,*srvalue;
+	struct COperatorExpression* cope;
+	int stt = 1;
+    switch(express->extype){
 		case V_expression:
-			{
-				
-				struct CVariableExpression* varexpress = express->variableexpression;
-				CValue* cval = lookup(varexpress->name, varenv);
-				if(cval)
-				{
-					switch(cval->vtype)
-					{
-					case NumberValue:
-					case StringValue:
-						return cval;
-					default:
+			varexpress = express->variableexpression;
+			cval = lookup(varexpress->name, varenv);
+			if(cval){
+				switch(cval->vtype){
+				case NumberValue:
+				case StringValue:
+					return cval;
+				default:
 
-						cerror(0, "ERROR--unexpected value type", __func__, __LINE__);
-					}
+					cerror(0, "ERROR--unexpected value type", __func__, __LINE__);
 				}
-				else
-				{   
-					return NULL;
-				}
+			}
+			else{   
+				return NULL;
 			}
         case V_value:
-            {
-                CValue* vval = express->valueexpression; 
-                switch(vval->vtype)
-                {
-					case NumberValue:
-					case StringValue:
-						return vval;
-					default:
-						cerror(0, "ERROR--unexpected value type", __func__, __LINE__);
-                }
-
-            }
+			cval = express->valueexpression; 
+			switch(cval->vtype){
+				case NumberValue:
+				case StringValue:
+					return cval;
+				default:
+					cerror(cval, "ERROR--unexpected value type", __func__, __LINE__);
+			}
         case V_call:
-			{
-				FuncCall* fnCall = express->funCall;
-				LExpression* exlst = fnCall->LexpList;
-				env* cval;
-				env* local = *varenv;
-				int idx;
-				parList* plst;
-				CValue* rtval;
-				FuncAbstraction* fndecl;
-				if(fnCall->tableIndex == -1){
-					idx = findTableIndex(fnCall->name);
-				} else {
-					cerror(0, "Calling Function that was not declared", __func__, __LINE__);
-				}
-				fnCall->tableIndex  = idx;
-				fndecl = funcTable[idx];
-				plst = fndecl->plist;
-				if(fndecl->parSize != fnCall->argSize){
-					cerror(0, "Arguments mismatch", __func__, __LINE__);
-				}
-				for(int i = 0;  i < fnCall->argSize; i++){
-					cval = malloc(sizeof(env));
-					if(!cval){
-						cerror(0, "Failed to create Cvariable Object for arguments", __func__, __LINE__);
-					}
-					cval->vval = eval(exlst->arg, varenv);
-					cval->key = plst->name->variableexpression->name;
-					cval->next = local;
-					plst = plst->next;
-					local = cval;
-					
-					exlst = exlst->next;
-				}
-				rtval = eval(fndecl->body , &local);
-				for(int i = 0; i < fnCall->argSize; i++){
-					cval = local;
-					local = local->next;
-					if(cval->vval){
-						free(cval->vval);
-					}
-					free(cval);
-				}
-				return rtval;	
+			fnCall = express->funCall;
+			exlst = fnCall->LexpList;
+			if(fnCall->tableIndex == -1){
+				idx = findTableIndex(fnCall->name);
+			} else {
+				cerror(0, "Calling Function that was not declared", __func__, __LINE__);
 			}
+			fnCall->tableIndex  = idx;
+			fndecl = funcTable[idx];
+			plst = fndecl->plist;
+			if(fndecl->parSize != fnCall->argSize){
+				cerror(0, "Arguments mismatch", __func__, __LINE__);
+			}
+			for(int i = 0;  i < fnCall->argSize; i++){
+				lvals = malloc(sizeof(env));
+				if(!lvals){
+					cerror(lvals, "Failed to create Cvariable Object for arguments", __func__, __LINE__);
+				}
+				lvals->vval = eval(exlst->arg, varenv);
+				lvals->key = plst->name->variableexpression->name;
+				lvals->next = local;
+				plst = plst->next;
+				local = lvals;	
+				exlst = exlst->next;
+			}
+			rtval = eval(fndecl->body , &local);
+			for(int i = 0; i < fnCall->argSize; i++){
+				lvals = local;
+				local = local->next;
+				if(lvals->vval){
+					free(lvals->vval);
+				}
+				free(lvals);
+			}
+			return rtval;	
         case V_operator:
-            {
-                struct COperatorExpression* cope = express->operatorexpression;
-                CValue* leftval, *rightval, *rop;
-                leftval = eval(cope->left, varenv);
-                rightval = eval(cope->right, varenv);
-                rop   =    malloc(sizeof(CValue));
-                CNumberValue* dlvalue,*drvalue, *detemp;
-                CStringValue* slvalue,*srvalue ;
-                cerror(rop, "ERROR--not enough memory to create CValue", __func__, __LINE__);
-                switch(cope->coperator)
-					{
+			cope = express->operatorexpression;
+			leftval = eval(cope->left, varenv);
+			rightval = eval(cope->right, varenv);
+			rop   =    malloc(sizeof(CValue));
+			cerror(rop, "ERROR--not enough memory to create CValue", __func__, __LINE__);
+			switch(cope->coperator)	{				
+				case TT_REQUAL:
+				case TT_NOTEQUAL:
+					if(cope->coperator == TT_NOTEQUAL){
+						stt = 0;
+					}
+					if(leftval->vtype == rightval->vtype && rightval->vtype == NumberValue){
+						dlvalue = (CNumberValue*)leftval->value;
+						drvalue = (CNumberValue*)rightval->value;
+						if(dlvalue->value == drvalue->value){
+							rop->vtype =  stt == 0? CFALSE : CTRUE;
+							return rop;
+						}
+						else{
+							rop->vtype = stt == 0? CTRUE : CFALSE;
+							return rop;
+						}
+					}
+					else if(leftval->vtype == rightval->vtype && rightval->vtype == StringValue){
+						slvalue = (CStringValue*)leftval->value;
+						srvalue = (CStringValue*)rightval->value;
+						if(strcmp(slvalue->value, srvalue->value) == 0){
+							rop->vtype = stt == 0? CFALSE : CTRUE;
+							return rop;
+						}
+						else{
+							rop->vtype = stt == 0? CTRUE : CFALSE;
+							return rop;
+						}
+					}
+					else{
+						cerror(0, "Type error: comparing two different type ", __func__, __LINE__);
+					}
+				case TT_GREATEROREQUAL:
+					if(leftval->vtype == NumberValue && rightval->vtype == NumberValue){
+						dlvalue = (CNumberValue*)leftval->value;
+						drvalue = (CNumberValue*)rightval->value;
+						rop->vtype = dlvalue->value >= drvalue->value? CTRUE : CFALSE;
+					   return rop;
+			 
+					}
+					else if(leftval->vtype == StringValue && rightval->vtype == StringValue){
+					
+						slvalue = (CStringValue*)leftval->value;
+						srvalue = (CStringValue*)rightval->value;
+						rop->vtype = strcmp(slvalue->value, srvalue->value) >= 0? CTRUE : CFALSE;
+						return rop;
+
+					}
+					else{
 						
-						case TT_REQUAL:
-						case TT_NOTEQUAL:
-						    {
-								int stt = 1;
-								if(cope->coperator == TT_NOTEQUAL){
-									stt = 0;
-								}
-								if(leftval->vtype == rightval->vtype && rightval->vtype == NumberValue){
-									dlvalue = (CNumberValue*)leftval->value;
-									drvalue = (CNumberValue*)rightval->value;
-									if(dlvalue->value == drvalue->value)
-									{
-										rop->vtype =  stt == 0? CFALSE : CTRUE;
-										return rop;
-									}
-									else
-									{
-										rop->vtype = stt == 0? CTRUE : CFALSE;
-										return rop;
-									}
-								}
-								else if (leftval->vtype == rightval->vtype && rightval->vtype == StringValue){
-									slvalue = (CStringValue*)leftval->value;
-									srvalue = (CStringValue*)rightval->value;
-									if(strcmp(slvalue->value, srvalue->value) == 0)
-									{
-										rop->vtype = stt == 0? CFALSE : CTRUE;
-										return rop;
-									}
-									else
-									{
-										rop->vtype = stt == 0? CTRUE : CFALSE;
-										return rop;
-									}
-								}
-								else
-								{
-									cerror(0, "Type error: comparing two different type ", __func__, __LINE__);
-								}
-						    }
-						case TT_GREATEROREQUAL:
-							{
-								if(leftval->vtype == NumberValue && rightval->vtype == NumberValue)
-								{
-									dlvalue = (CNumberValue*)leftval->value;
-									drvalue = (CNumberValue*)rightval->value;
-								    rop->vtype = dlvalue->value >= drvalue->value? CTRUE : CFALSE;
-								   return rop;
-						 
-								}
-								else if(leftval->vtype == StringValue && rightval->vtype == StringValue)
-								{
-								
-									slvalue = (CStringValue*)leftval->value;
-									srvalue = (CStringValue*)rightval->value;
-									rop->vtype = strcmp(slvalue->value, srvalue->value) >= 0? CTRUE : CFALSE;
-									return rop;
-			
-								}
-								else
-								{
-									
-									cerror(0, "Type error: comparing two different type " , __func__, __LINE__);
-									
-								}
+						cerror(0, "Type error: comparing two different type " , __func__, __LINE__);
+						
+					}
+				case TT_LESSOREQUAL:
 
-							}
-						case TT_LESSOREQUAL:
-							{
-								if(leftval->vtype == NumberValue && rightval->vtype == NumberValue)
-								{
-									dlvalue = (CNumberValue*)leftval->value;
-									drvalue = (CNumberValue*)rightval->value;
-								    rop->vtype = dlvalue->value <= drvalue->value? CTRUE : CFALSE;
-								    return rop;
-						 
-								}
-								else if(leftval->vtype == StringValue && rightval->vtype == StringValue)
-								{
-								
-									slvalue = (CStringValue*)leftval->value;
-									srvalue = (CStringValue*)rightval->value;
-									rop->vtype = strcmp(slvalue->value, srvalue->value) <= 0? CTRUE : CFALSE;
-									return rop;
-			
-								}
-								else
-								{
-									
-									cerror(0, "Type error: comparing two different type ", __func__, __LINE__);
-									
-								}
+					if(leftval->vtype == NumberValue && rightval->vtype == NumberValue){
+						dlvalue = (CNumberValue*)leftval->value;
+						drvalue = (CNumberValue*)rightval->value;
+						rop->vtype = dlvalue->value <= drvalue->value? CTRUE : CFALSE;
+						return rop;
+					}
+					else if(leftval->vtype == StringValue && rightval->vtype == StringValue){
+						slvalue = (CStringValue*)leftval->value;
+						srvalue = (CStringValue*)rightval->value;
+						rop->vtype = strcmp(slvalue->value, srvalue->value) <= 0? CTRUE : CFALSE;
+						return rop;
+					}
+					else{
+						
+						cerror(0, "Type error: comparing two different type ", __func__, __LINE__);
+						
+					}
 
-							}
-						case TT_LESS:
-							{
-								 if(leftval->vtype == NumberValue && rightval->vtype == NumberValue)
-								{
-								 
-									dlvalue = (CNumberValue*)leftval->value;
-									drvalue = (CNumberValue*)rightval->value;
-									rop->vtype = dlvalue->value < drvalue->value ? CTRUE : CFALSE;
-									return rop;
-								}
-								else if((leftval->vtype == StringValue)&& (rightval->vtype == StringValue))
-								{
+				case TT_LESS:
+					
+					if(leftval->vtype == NumberValue && rightval->vtype == NumberValue){
+					 
+						dlvalue = (CNumberValue*)leftval->value;
+						drvalue = (CNumberValue*)rightval->value;
+						rop->vtype = dlvalue->value < drvalue->value ? CTRUE : CFALSE;
+						return rop;
+					}
+					else if((leftval->vtype == StringValue)&& (rightval->vtype == StringValue)){
 
-									slvalue = (CStringValue*)leftval->value;
-									srvalue = (CStringValue*)rightval->value;
-									rop->vtype = strcmp(slvalue->value, srvalue->value) < 0? CTRUE: CFALSE;
-									return rop;
-								}
-								else {
-									cerror(0,"ERROR--Don't mix up types" , __func__, __LINE__);
-								}
+						slvalue = (CStringValue*)leftval->value;
+						srvalue = (CStringValue*)rightval->value;
+						rop->vtype = strcmp(slvalue->value, srvalue->value) < 0? CTRUE: CFALSE;
+						return rop;
+					}
+					else {
+						cerror(0,"ERROR--Don't mix up types" , __func__, __LINE__);
+					}
 
-							}
-						case TT_GREATER:
-							{
-								 if(leftval->vtype == NumberValue && rightval->vtype == NumberValue)
-								{
+				case TT_GREATER:
+				
+					if(leftval->vtype == NumberValue && rightval->vtype == NumberValue){
+						dlvalue = (CNumberValue*)leftval->value;
+						drvalue = (CNumberValue*)rightval->value;
+						rop->vtype = dlvalue->value > drvalue->value ? CTRUE : CFALSE;
+						return rop;
+					}
+					  if(leftval->vtype == StringValue && rightval->vtype == StringValue){
+						slvalue = (CStringValue*)leftval->value;
+						srvalue = (CStringValue*)rightval->value;
+						rop->vtype = strcmp(slvalue->value, srvalue->value) > 0? CTRUE : CFALSE;
+						return rop;
+					}
 
-									dlvalue = (CNumberValue*)leftval->value;
-									drvalue = (CNumberValue*)rightval->value;
-									rop->vtype = dlvalue->value > drvalue->value ? CTRUE : CFALSE;
-									return rop;
-								}
-								  if(leftval->vtype == StringValue && rightval->vtype == StringValue)
-								{
-									slvalue = (CStringValue*)leftval->value;
-									srvalue = (CStringValue*)rightval->value;
-									rop->vtype = strcmp(slvalue->value, srvalue->value) > 0? CTRUE : CFALSE;
-									return rop;
-								}
+					 cerror(0,"ERROR--Don't mix up types" , __func__, __LINE__);
+				case '+':
+					if(leftval->vtype == NumberValue && rightval->vtype == NumberValue){
+						rop->vtype = NumberValue;
+						dlvalue = (CNumberValue*)leftval->value;
+						drvalue = (CNumberValue*)rightval->value;
+						detemp =  (CNumberValue* )malloc(sizeof(CNumberValue));
+						detemp->value = dlvalue->value + drvalue->value;
+						rop->value = detemp;
+						return rop;
+					}
+					else if(leftval->vtype == StringValue && rightval->vtype == StringValue){
+						rop->vtype = StringValue;
+						slvalue = (CStringValue*)leftval->value;
+						srvalue = (CStringValue*)rightval->value;
+						strcat(slvalue->value, srvalue->value);
+						rop->value = slvalue;
+						return rop;
+					}
+					else {
 
-								 cerror(0,"ERROR--Don't mix up types" , __func__, __LINE__);
-							}
-						case '+':
-							{
-								if(leftval->vtype == NumberValue && rightval->vtype == NumberValue)
-								{
-
-									rop->vtype = NumberValue;
-									dlvalue = (CNumberValue*)leftval->value;
-									drvalue = (CNumberValue*)rightval->value;
-									detemp =  (CNumberValue* )malloc(sizeof(CNumberValue));
-									detemp->value = dlvalue->value + drvalue->value;
-									rop->value = detemp;
-									return rop;
-								}
-								else if(leftval->vtype == StringValue && rightval->vtype == StringValue)
-								{
-									rop->vtype = StringValue;
-									slvalue = (CStringValue*)leftval->value;
-									srvalue = (CStringValue*)rightval->value;
-									strcat(slvalue->value, srvalue->value);
-									rop->value = slvalue;
-									return rop;
-								}
-								else {
-
-								cerror(0,"ERROR--Don't mix up types for + operator" , __func__, __LINE__);
-
-								}
-							}
-						case '-':
-							{
-								if(leftval->vtype == NumberValue && rightval->vtype == NumberValue)
-								{
-
-									rop->vtype = NumberValue;
-									dlvalue = (CNumberValue*)leftval->value;
-									drvalue = (CNumberValue*)rightval->value;
-									detemp = (CNumberValue* )malloc(sizeof(CNumberValue));
-									detemp->value = dlvalue->value - drvalue->value;
-									rop->value = detemp;
-									return rop;
-								}
-								 cerror(0,"ERROR--Don't mix up types for - operator", __func__, __LINE__ );
-							}
-						case '*':
-							{
-								if(leftval->vtype == NumberValue && rightval->vtype == NumberValue)
-								{
-
-									rop->vtype = NumberValue;
-									dlvalue = (CNumberValue*)leftval->value;
-									drvalue = (CNumberValue*)rightval->value;
-									detemp = (CNumberValue* )malloc(sizeof(CNumberValue));
-									detemp->value = dlvalue->value * drvalue->value;
-									rop->value = detemp;
-									return rop;
-								}
-								 cerror(0, "ERROR--Don't mix up types" , __func__, __LINE__);
-							}
-						case '/':
-							{
-							  if((leftval->vtype == NumberValue)&& (rightval->vtype == NumberValue))
-								{
-
-									rop->vtype = NumberValue;
-									dlvalue = (CNumberValue*)leftval->value;
-									drvalue = (CNumberValue*)rightval->value;
-									detemp = (CNumberValue* )malloc(sizeof(CNumberValue));
-									if (drvalue->value == 0.0)
-									{
-										cerror(0,"ERROR---division by zero is not allowed", __func__, __LINE__ );
-									}
-									detemp->value = dlvalue->value / drvalue->value;
-									rop->value = detemp;
-									return rop;
-								}
-								 cerror(0,"ERROR--Don't mix up types", __func__, __LINE__ );
-							}
-						case '%':
-							{
-							  if(leftval->vtype == NumberValue && rightval->vtype == NumberValue)
-								{
-
-									rop->vtype = NumberValue;
-									dlvalue = (CNumberValue*)leftval->value;
-									drvalue = (CNumberValue*)rightval->value;
-									detemp = (CNumberValue* )malloc(sizeof(CNumberValue));
-									if (drvalue->value == 0.0)
-									{
-										cerror(0,"ERROR---Modulo by zero is not allowed", __func__, __LINE__ );
-									}
-									detemp->value = (int)dlvalue->value % (int)drvalue->value;
-									rop->value = detemp;
-									return rop;
-								}
-
-								cerror(0, "ERROR--Don't mix up types", __func__, __LINE__);
-
-							}
-
+					cerror(0,"ERROR--Don't mix up types for + operator" , __func__, __LINE__);
 
 					}
 
-            }
+				case '-':
+					if(leftval->vtype == NumberValue && rightval->vtype == NumberValue){
+						rop->vtype = NumberValue;
+						dlvalue = (CNumberValue*)leftval->value;
+						drvalue = (CNumberValue*)rightval->value;
+						detemp = (CNumberValue* )malloc(sizeof(CNumberValue));
+						detemp->value = dlvalue->value - drvalue->value;
+						rop->value = detemp;
+						return rop;
+					}
+					cerror(0,"ERROR--Don't mix up types for - operator", __func__, __LINE__ );
+				case '*':
+					if(leftval->vtype == NumberValue && rightval->vtype == NumberValue){
+						rop->vtype = NumberValue;
+						dlvalue = (CNumberValue*)leftval->value;
+						drvalue = (CNumberValue*)rightval->value;
+						detemp = (CNumberValue* )malloc(sizeof(CNumberValue));
+						detemp->value = dlvalue->value * drvalue->value;
+						rop->value = detemp;
+						return rop;
+					}
+					cerror(0, "ERROR--Don't mix up types" , __func__, __LINE__);
+				case '/':
+					
+				    if((leftval->vtype == NumberValue)&& (rightval->vtype == NumberValue)){
+						rop->vtype = NumberValue;
+						dlvalue = (CNumberValue*)leftval->value;
+						drvalue = (CNumberValue*)rightval->value;
+						detemp = (CNumberValue* )malloc(sizeof(CNumberValue));
+						if (drvalue->value == 0.0){
+							cerror(0,"ERROR---division by zero is not allowed", __func__, __LINE__ );
+						}
+						detemp->value = dlvalue->value / drvalue->value;
+						rop->value = detemp;
+						return rop;
+					}
+					cerror(0,"ERROR--Don't mix up types", __func__, __LINE__ );
+					
+				case '%':
 
-    }
+				    if(leftval->vtype == NumberValue && rightval->vtype == NumberValue){
+						rop->vtype = NumberValue;
+						dlvalue = (CNumberValue*)leftval->value;
+						drvalue = (CNumberValue*)rightval->value;
+						detemp = (CNumberValue* )malloc(sizeof(CNumberValue));
+						if (drvalue->value == 0.0){
+							cerror(0,"ERROR---Modulo by zero is not allowed", __func__, __LINE__ );
+						}
+						detemp->value = (int)dlvalue->value % (int)drvalue->value;
+						rop->value = detemp;
+						return rop;
+					}
 
+					cerror(0, "ERROR--Don't mix up types", __func__, __LINE__);
+			}
+
+        }
         cerror(0,"ERROR--Don't mix up types!!" , __func__, __LINE__);
-
 }
 
-void exec ()
-{
-    switch(currentstat->stype)
-    {
+void exec (){
+	CPrintStatement* ptstat;
+	LExpression* largs;
+	CValue* rval, *dval;
+	CAssignStatement* astat;
+	CGotoStatement* gotostat;
+	CIfThenStatement* ifstat;
+	CGosubStatement*gosubstat;
+	CInputStatement* ip;
+    int jmp, slen, buffsize = 256;
+    char buf[buffsize];
+    int i = 0;
+    double lval;
+    char *tmp;
+    switch(currentstat->stype){
     case S_print:
-        {
-            CPrintStatement* ptstat = (CPrintStatement*)currentstat->statement;
-            LExpression* largs = ptstat->expression;
-            while(largs != NULL){
-				CValue* rval =   eval(largs->arg,&henv);
-				switch(rval->vtype){
-					case NumberValue:
-						printf("%f", ((CNumberValue *)rval->value)->value);
-						break;
-					case StringValue:
-						printf("%s", ((CStringValue *)rval->value)->value);
-						break;
-				}
-				largs = largs->next;
+		ptstat = (CPrintStatement*)currentstat->statement;
+	    largs = ptstat->expression;
+		while(largs != NULL){
+			rval =   eval(largs->arg,&henv);
+			switch(rval->vtype){
+				case NumberValue:
+					printf("%f", ((CNumberValue *)rval->value)->value);
+					break;
+				case StringValue:
+					printf("%s", ((CStringValue *)rval->value)->value);
+					break;
 			}
-			if(ptstat->expression == NULL){
-				printf("\n");
-			}
-			return;
-        }
-    case S_assign:
-        {
-            CAssignStatement* astat = (CAssignStatement *)currentstat->statement;
-            if(!astat)
-            {
-                cerror(0, "ERROR--not enough memory" , __func__, __LINE__);
-            }
-            CValue* val = eval(astat->value, &henv);
-            putvar(astat->name, val);
-            return;
-        }
-    case S_goto:
-        {
-            CGotoStatement* gotostat = (CGotoStatement*)currentstat->statement;
-            int jmp = (int)strtol(gotostat->label, (char**)NULL, 10);
-            if(jmp < 0){
-				//clean(&henv);
-				jumpto(jmp, -1 * jmp);
-			}
-			else {
-				jumpto(jmp, 0);
-			}
-            return;
-        }
-    case S_ifthen:
-        {
-            CIfThenStatement* ifstat = (CIfThenStatement*)currentstat->statement;
-            CValue* dval = eval(ifstat->condition, &henv);
-            int jmp;
-            if(dval->vtype == CTRUE)
-            {
-                //To do change label to int, and make return switch to pc. check out henv
-                //pc = jumpto(ifstat->label, 1);
-                jmp = (int)strtol(ifstat->label, (char**)NULL, 10);
-                jumpto(jmp, 0);
-
-            }
-            return;
-
-        }   
-    case S_return:
-        {
-			int jmp = rstack->stack[--rstack->idx];
-            jumpto(jmp, 1);
-            return;
-        }
-    case S_gosub:
-        {
-			CGosubStatement* gosubstat = (CGosubStatement*)currentstat->statement;
-            jumpto(gosubstat->jumpto, 0);
-			rstack->stack[rstack->idx++] = gosubstat->label;
-            return;
+			largs = largs->next;
 		}
+		if(ptstat->expression == NULL){
+			printf("\n");
+		}
+		return;
+    case S_assign:
+		astat = (CAssignStatement *)currentstat->statement;
+		if(!astat){
+			cerror(0, "ERROR--not enough memory" , __func__, __LINE__);
+		}
+		dval = eval(astat->value, &henv);
+		putvar(astat->name, dval);
+		return;
+    case S_goto:
+		gotostat = (CGotoStatement*)currentstat->statement;
+		jmp = (int)strtol(gotostat->label, (char**)NULL, 10);
+		if(jmp < 0){
+			//clean(&henv);
+			jumpto(jmp, -1 * jmp);
+		}
+		else {
+			jumpto(jmp, 0);
+		}
+		return;
+    case S_ifthen:
+		ifstat = (CIfThenStatement*)currentstat->statement;
+		dval = eval(ifstat->condition, &henv);
+		int jmp;
+		if(dval->vtype == CTRUE)
+		{
+			jmp = (int)strtol(ifstat->label, (char**)NULL, 10);
+			jumpto(jmp, 0);
+
+		}
+		return;
+    case S_return:
+		jmp = rstack->stack[--rstack->idx];
+		jumpto(jmp, 1);
+		return;
+    case S_gosub:
+		gosubstat = (CGosubStatement*)currentstat->statement;
+		jumpto(gosubstat->jumpto, 0);
+		rstack->stack[rstack->idx++] = gosubstat->label;
+		return;
     case S_input:
-        {
-            printf("\nuser input>>");
-            CInputStatement* ip = (CInputStatement*)currentstat->statement;
-            int buffsize = 256;
-            char buf[buffsize];
-            fgets(buf, buffsize, stdin);
-            int slen = strlen(buf);
-            int i = 0;
-            while(i <= slen)
-            {
-                if(isdigit(buf[i]))
-                {
-                    i++;
-                    continue;
-                }
-                break;
-            }
-            if(slen - 1 == i)
-            {
-                double lval = strtod(buf, (char**)NULL);
-                CValue* vexp = makenumval(lval)->valueexpression;
-                putvar(ip->name, vexp);
-                return;
-            }
-            else
-            {
-				char *tmp = malloc(sizeof(char)*slen);
-				strncpy(tmp, buf, slen-1);
-				tmp[slen] = '\0';
-                CValue* sexp = makestrval(tmp)->valueexpression;
-                putvar(ip->name, sexp);
-                return;
-            }
-        }
-
-
+		printf("\nuser input>> ");
+		ip = (CInputStatement*)currentstat->statement;
+		fgets(buf, buffsize, stdin);
+		slen = strlen(buf);
+		while(i <= slen){
+			if(isdigit(buf[i])){
+				i++;
+				continue;
+			}
+			break;
+		}
+		if(slen - 1 == i){
+			lval = strtod(buf, (char**)NULL);
+			dval = makenumval(lval)->valueexpression;
+			putvar(ip->name, dval);
+			return;
+		}
+		else{
+			tmp = malloc(sizeof(char)*slen);
+			strncpy(tmp, buf, slen-1);
+			tmp[slen] = '\0';
+			dval = makestrval(tmp)->valueexpression;
+			putvar(ip->name, dval);
+			return;
+		}
     }
 }
 
 
-CStatement* parser ()
-{
+CStatement* parser (){
     char* labelnumber;
+    char xname[60];
+	char stepname[60];
+	char govl[20];
     const int LOCAL_STAT_MAX = 100;
-    int stepindex = 0;
+    int llnum, jmpto,nkey, cidx, stepindex = 0;
+    Clist* tk;   
+	LExpression* hd, *tl;
+	Clabels* clb;
+    FuncAbstraction* funabs;
+    parList* params;
+    CAssignStatement* astat;
+    CArrayStatement* arstat;
+    CPrintStatement* pst;
+    CInputStatement* in;
+    CIfThenStatement* ifst;
+    CGotoStatement* gstat;
+    CGosubStatement* gosub;
+    struct CExpression* body, *fst,*inex, *texpf, *texpss, *cond ,*valex, *valop, *value, *optional = NULL;
+    char* name, *wlab;
     struct labelList* locallst = malloc(sizeof(struct labelList));
     cerror(locallst, "ERROR- setting label inside a For loop not allowed" , __func__, __LINE__);
     locallst->top = 0;
-    while(1)
-    {
+    while(1){
         while(match(TT_LINE)){ }
-        // printf("break out new line");
-        if(match(TT_NUMBER))
-        {
-            if (setinjump)
-            {
+        if(match(TT_NUMBER)){
+            if (setinjump){
                 cerror(0, "ERROR- setting label inside a For loop not allowed" , __func__, __LINE__);
             }
             labelnumber = stepback->text;
-			if(match(DEF))
-			{   
+			if(match(DEF)){   
 				char* funame = consume(TT_WORD)->text;
 				if(!match(TT_LEFT_PAREN)){
 					cerror(0, "ERROR- Expected opening paren for function" , __func__, __LINE__);
 				}
-				FuncAbstraction* funabs = malloc(sizeof(FuncAbstraction));
+				funabs = malloc(sizeof(FuncAbstraction));
 				funabs->name = funame;
 				funabs->parSize = 0;
 				funabs->plist = malloc(sizeof(parList*));
-				parList* params = funabs->plist;
+				params = funabs->plist;
 				if(!match(TT_RIGHT_PAREN)){
 					params->name = expression();
 					++funabs->parSize;
@@ -1077,57 +959,42 @@ CStatement* parser ()
 					}
 
 				}
-				else
-				{
+				else{
 					params->name = NULL;
 					consume(TT_RIGHT_PAREN);
 				}
 				consume(TT_EQUAL);
-				struct CExpression* body = expression();
+				body = expression();
 				funabs->body = body;
 				funcTable[fntabidx++] = funabs;
 				addstat(NULL, 0,statsize,labelnumber,1);
 				++statsize;
 			}
-			else if(match(LET))
-			{
-				char* name = consume(TT_WORD)->text;
+			else if(match(LET)){
+				name = consume(TT_WORD)->text;
 				consume(TT_EQUAL);
-				CAssignStatement* astat = makeassignstat(name, expression());
+				astat = makeassignstat(name, expression());
 				addstat(astat, S_assign,statsize,labelnumber,0);
 				++statsize;
 			}
-			else if(match(DIM))
-			{
-				char* name = consume(TT_WORD)->text;
-				struct CExpression* fst;
-				struct CExpression* optional = NULL;
+			else if(match(DIM)){
+				name = consume(TT_WORD)->text;
 				consume(TT_LEFT_PAREN);
 				fst = expression();
 				if(matchstring(",")){
 					optional = expression();
 				}
 				consume(TT_RIGHT_PAREN);
-				CArrayStatement* arstat = makearraystat(name, fst, optional);
+				arstat = makearraystat(name, fst, optional);
 				addstat(arstat, S_array, statsize,labelnumber,0);
 				++statsize;
 			}
-			else if(match(FOR))
-			{   
-				if(match(TT_WORD))
-				{
+			else if(match(FOR)){   
+				if(match(TT_WORD)){
 					if(match(TT_EQUAL)){
-						
-						char* name = doubleback->text;
-						char xname[60];
-						char stepname[60];
-						struct CExpression* inex, *texpf, *texpss, *cond ,*valex, *valop;
-						CAssignStatement* astat;
-						CIfThenStatement* ifst;
-						Clabels* clb;
+						name = doubleback->text;
 						time_t seconds;
 						seconds = time(NULL);
-						//consume(TT_EQUAL);
 						astat = makeassignstat(name, expression());
 						addstat(astat, S_assign,statsize,labelnumber,0);
 						++statsize;
@@ -1163,40 +1030,30 @@ CStatement* parser ()
 				        clb->key = strtol(labelnumber, (char**)NULL, 10);
 						clb->cindex = statsize - 1;
 						clb->st = (void *)astat;
-    
 						if(locallst->top - 1 < LOCAL_STAT_MAX){
 							locallst->clabs[locallst->top++] = clb;
 						}
 				        
 					}
-					else
-					{
+					else{
 						cerror(0, "Wrongly structured FOR statement" , __func__, __LINE__);
 						
 					}
 				}
-				else
-				{
+				else{
 					cerror(0, "Wrongly structured FOR statement", __func__, __LINE__);
 				}
 			}
-			else if(match(PRINT))
-			{
-				LExpression* hd;
-				LExpression* tl;
-				struct CExpression* value;
-				CPrintStatement* pst;
+			else if(match(PRINT)){
 				if(match(TT_LINE)){
 					hd = NULL;
 				}
-				else
-				{
+				else{
 					hd = malloc(sizeof(LExpression));
 				    cerror(hd, "Failed to create expression list" , __func__, __LINE__);
 				    value = expression();
 				    hd->arg = value;
-				    tl = hd;
-				    
+				    tl = hd;    
 				    while(match(TT_COMMA)){
 						value = expression();
 						tl->next = malloc(sizeof(LExpression));
@@ -1209,105 +1066,88 @@ CStatement* parser ()
 				addstat(pst, S_print, statsize,labelnumber,0);
 				++statsize;
 			}
-			else if(match(INPUT))
-			{
-			  Clist* tk = consume(TT_WORD);
-			  CInputStatement* in = inputstat(tk->text);
-			  addstat(in, S_input,statsize,labelnumber,0);
-			  ++statsize;
-
+			else if(match(INPUT)){
+			    tk = consume(TT_WORD);
+			    in = inputstat(tk->text);
+			    addstat(in, S_input,statsize,labelnumber,0);
+			    ++statsize;
 			}
-			else if(match(GOTO))
-			{
-				if(!match(TT_LINE))
-				{
-					CGotoStatement* gstat = makegotostat(consume(TT_NUMBER)->text);
+			else if(match(GOTO)){
+				if(!match(TT_LINE)){
+					gstat = makegotostat(consume(TT_NUMBER)->text);
 					addstat(gstat, S_goto, statsize,labelnumber,0);
 					++statsize;
 				}
-				else
-				{
+				else{
 					cerror(0, "ERROR--this label was not declared ", __func__, __LINE__ );
 				}
 				continue;
 			}
-			else if(match(GOSUB))
-			{
-				if(!match(TT_LINE))
-				{
-					int jmpto = (int)strtol(consume(TT_NUMBER)->text, (char**)NULL, 10);
-					int llnum = (int)strtol(labelnumber, (char**)NULL, 10);
-					CGosubStatement* gosub = makegosubstat(jmpto, llnum);
+			else if(match(GOSUB)){
+				if(!match(TT_LINE)){
+					jmpto = (int)strtol(consume(TT_NUMBER)->text, (char**)NULL, 10);
+					llnum = (int)strtol(labelnumber, (char**)NULL, 10);
+					gosub = makegosubstat(jmpto, llnum);
 					addstat(gosub, S_gosub, statsize,labelnumber, 0);
 					++statsize;
 				}
-				else
-				{
+				else{
 					cerror(0, "ERROR--this label was not declared " , __func__, __LINE__ );
 				}
 				continue;
-				
 			}
-			else if(match(RETURN))
-			{
-				CGotoStatement* rtn = makegotostat("-1");
-				addstat(rtn , S_return, statsize,labelnumber, 0);
+			else if(match(RETURN)){
+				gstat = makegotostat("-1");
+				addstat(gstat , S_return, statsize,labelnumber, 0);
 				++statsize;
 				continue;
 
 			}
-			else if(match(DATA))
-			{
+			else if(match(DATA)){
 				
 				
 			}
-			else if(match(IF))
-			{
-				char* wlab;
-				struct CExpression* cond = condexpression();
-				
+			else if(match(IF)){
+				cond = condexpression();
 				consume(THEN);
 				wlab = consume(TT_NUMBER)->text;
-				CIfThenStatement* ifst = makeifthenstat(cond, wlab);
+				ifst = makeifthenstat(cond, wlab);
 				addstat(ifst, S_ifthen, statsize,labelnumber,0);
 				++statsize;
 				while(match(TT_LINE)){ }
 				continue;
 			}
-			else if(match(NEXT))
-			{
-				char govl[20];
+			else if(match(NEXT)){
+
 				if(locallst->top <= 0){
 					cerror(0, "Semantics error, there should be a FOR before NEXT", __func__, __LINE__);
 				}
-				CAssignStatement* astat = (CAssignStatement* )locallst->clabs[--locallst->top]->st;
-				int nkey = locallst->clabs[locallst->top]->key;
-				int cidx = locallst->clabs[locallst->top]->cindex;
+				astat = (CAssignStatement* )locallst->clabs[--locallst->top]->st;
+				nkey = locallst->clabs[locallst->top]->key;
+				cidx = locallst->clabs[locallst->top]->cindex;
 				free(locallst->clabs[locallst->top]);
 				sprintf(govl, "-%d", cidx);
 				if(strcmp(astat->name, currenttoken->text) != 0){
 					cerror(0, "Semantics error, there should be a FOR before NEXT" , __func__, __LINE__);
 				}
 				consume(TT_WORD);
-				addstat(astat, S_assign, statsize,labelnumber,0);
+				addstat(astat, S_assign, statsize++,labelnumber,0);
 				statsize++;
-				CGotoStatement* gstat = makegotostat(strdup(govl));
+				gstat = makegotostat(strdup(govl));
 				addstat(gstat, S_goto, statsize,labelnumber,0);
 				statsize++;
 				while(match(TT_LINE)){ }
 				if(currenttoken->type == TT_NUMBER){
-					CIfThenStatement* ifstat = (CIfThenStatement* )locallst->clabs[--locallst->top]->st;
-				    ifstat->label = currenttoken->text;
+					ifst = (CIfThenStatement* )locallst->clabs[--locallst->top]->st;
+				    ifst->label = currenttoken->text;
 				    free(locallst->clabs[locallst->top]);
 				}
 				else {
 					cerror(0, "Semantics error  FOR - NEXT statements " , __func__, __LINE__);
 				}
-	
 			}   
 		}
-		if (!(currenttoken))
-		{
+		if (!(currenttoken)){
 			break;
 		}	
     }
@@ -1317,8 +1157,8 @@ CStatement* parser ()
     free(locallst);
     return hstat;
 }
-Clist* makeToken(int tsize, char* text, int type)
-{
+
+Clist* makeToken(int tsize, char* text, int type){
     Clist* temp = (Clist* )malloc(sizeof(Clist));
     char* stkn;
     int ntyp = type;
@@ -1335,8 +1175,7 @@ Clist* makeToken(int tsize, char* text, int type)
 			ntyp = i;
 		}
 	}	
-    if(TT_WORD == ntyp)
-    {
+    if(TT_WORD == ntyp){
         insertlabel(stkn);
     }
     temp->type = ntyp;
@@ -1345,7 +1184,6 @@ Clist* makeToken(int tsize, char* text, int type)
 }
 
 int isRelational(char c){
-	
 	switch(c){
 		case '=':
 		case '>':
@@ -1400,10 +1238,9 @@ int updateOp(char c, char e){
 	else if(c == '=' && e == '='){
 		return TT_REQUAL;
 	}
-	else {
+	else{
 		cerror(0 , "Poorly structured relational operator", __func__, __LINE__);
-	}
-	
+	}	
 }
 
 
@@ -1416,45 +1253,33 @@ char* cconcat(char c, char e){
 }		
 	
 
-void addToList(Clist* token)
-{
+void addToList(Clist* token){
     Clist* temp;
-    if(!tail)
-    {
+    if(!tail){
         head = token;
         tail = token;
     }
-    else
-    {
+    else{
         temp = token;
         tail->next = token;
         tail = temp;
-
     }
 }
 
-void  tokenize(char* source)
-{
-    char c;
+void  tokenize(char* source){
+    char c, sgn, mcop;
     int state = TS_DEFAULT;
-    int tkntype;
+    int tkntype,ttkntype ,limit = 1;
     int charcount = 0;
-    char* strptr = 0;
-    char mcop;
+    char* strptr = NULL;
+    char* sstrptr = NULL;
     char charTokens[] = "\n=+-*/%<>(),";
-    while((c = *source++) != 0)
-    {
-        switch(state)
-        {
+    while((c = *source++) != 0){
+        switch(state){
         case TS_DEFAULT:
-			if(strptr = strchr(charTokens, c))
-			{
+			if(strptr = strchr(charTokens, c)){
 				mcop = *strptr;
-				char sgn;
-				char* sstrptr = 0;
-				int ttkntype;
 				tkntype = getoptype(mcop);
-				int limit = 1;
 				if(isRelational(mcop)){
 					sgn =  source[0];
 					if(mcop == '>'){
@@ -1469,7 +1294,6 @@ void  tokenize(char* source)
 							limit = 2;
 							source++;
 							strptr = cconcat(mcop, sgn);
-							
 						}
 					}
 					
@@ -1481,35 +1305,27 @@ void  tokenize(char* source)
 				state = TS_DEFAULT;
 
 			}
-			else if(isalpha(c))
-			{
+			else if(isalpha(c)){
 				strptr = source - 1;
 				++charcount;
 				state = TS_WORD;
 			}
-			else if(isdigit(c))
-			{
+			else if(isdigit(c)){
 				strptr = source - 1;
 				++charcount;
 				state = TS_NUMBER;
-
 			}
-			else if(c == '"')
-			{
+			else if(c == '"'){
 			    strptr = source;
 			    state = TS_STRING;
 			}
-
-			else if(c == '\'')
-			{
+			else if(c == '\''){
 				state = TS_COMMENT;
 			}
 			else
 			{
-			   if(isspace(c))
-				{
-				while(isspace(c))
-				{
+			   if(isspace(c)){
+				while(isspace(c)){
 					c = *source++;
 				}
 				source--;
@@ -1517,27 +1333,23 @@ void  tokenize(char* source)
 			}
 			break;
         case TS_WORD:
-                if(c == ':')
-                {
+                if(c == ':'){
                     addToList(makeToken(charcount, strptr, TT_LABEL));
                     charcount = 0;
                     state = TS_DEFAULT;
                     source--;
                 }
-                else if((*source == '\0')&& isalnum(c))
-                {
+                else if((*source == '\0')&& isalnum(c)){
                     ++charcount;
                     addToList(makeToken(charcount,strptr,TT_WORD));
                     charcount = 0;
                     state = TS_DEFAULT;
                     source--;
                 }
-                else if(isalnum(c))
-                {
+                else if(isalnum(c)){
                     ++charcount;
                 }
-                else
-                {
+                else{
                     addToList(makeToken(charcount,strptr,TT_WORD));
                     charcount = 0;
                     state = TS_DEFAULT;
@@ -1546,14 +1358,12 @@ void  tokenize(char* source)
                 }
                 break;
         case TS_NUMBER:
-                if(isdigit(c))
-                {
+                if(isdigit(c)){
 
                     ++charcount;
 
                 }
-                if ((*source == 0) || (!isdigit(c)))
-                {
+                if ((*source == 0) || (!isdigit(c))){
 
                     addToList(makeToken(charcount,strptr,TT_NUMBER));
                     charcount = 0;
@@ -1562,9 +1372,7 @@ void  tokenize(char* source)
                 }
                 break;
         case TS_STRING:
-
-                if(c == '"')
-                {
+                if(c == '"'){
 
                     addToList(makeToken(charcount , strptr,TT_STRING));
                     charcount = 0;
@@ -1572,34 +1380,27 @@ void  tokenize(char* source)
                 }
                 else
                     ++charcount;
-
                 break;
         case TS_COMMENT:
                 if(c == '\n')
                    state = TS_DEFAULT;
                 //source--;
                 break;
-
         }
-
     }
-
 	return;
 }
 
 
 
-struct CExpression* expression()
-{
+struct CExpression* expression(){
     return coperator();
 }
 
 
-struct CExpression* catomic ()
-{
+struct CExpression* catomic (){
     if(!currenttoken) return 0;
-    if(match(TT_WORD))
-    {   
+    if(match(TT_WORD)){   
 		char* nm = stepback->text;
 		if(match(TT_LEFT_PAREN)){
 			LExpression* el = NULL;
@@ -1625,24 +1426,19 @@ struct CExpression* catomic ()
 			}
 			return makefunCall(nm, el, cnt);	
 		}
-		else {
+		else{
 			return makevarexpression(nm);
 		}
         
     }
-    else if (match(TT_NUMBER))
-    {
-
+    else if(match(TT_NUMBER)){
         return makenumval(strtod(stepback->text, 0));
     }
-    else if (match(TT_STRING))
-    {
+    else if(match(TT_STRING)){
         return makestrval(stepback->text);
     }
-    else if (match(TT_LEFT_PAREN))
-    {
+    else if(match(TT_LEFT_PAREN)){
         struct CExpression* express = expression();
-
         consume(TT_RIGHT_PAREN);
         return express;
     }
@@ -1651,16 +1447,13 @@ struct CExpression* catomic ()
 }
 
 
-struct CExpression* coperator()
-{
+struct CExpression* coperator(){
     struct CExpression* express = catomic();
     int cop;
-    while(match(TT_OPERATOR))
-    {
+    while(match(TT_OPERATOR)){
         cop = stepback->text[0];
         struct CExpression* right = catomic();
-        if(!right)
-        {
+        if(!right){
             break;
         }
         express = makeoperatorexpress(express, cop, right);
@@ -1675,13 +1468,11 @@ struct CExpression* condexpression()
     struct CExpression* right;
     int cop;
     int intw = 1;
-    while(matchrelational())
-    {
+    while(matchrelational()){
 		intw = 0;
         cop = stepback->type;
         right = expression();
-        if(!right)
-        {
+        if(!right){
 			intw = 1;
             break;
         }
